@@ -2,6 +2,18 @@ from django.db import models
 from django.contrib.auth.models import User
 import random
 
+class Signup(models.Model):
+    firstName = models.CharField(max_length=120)
+    lastName = models.CharField(max_length=120)
+    userName = models.CharField(max_length=50)
+    email = models.EmailField(max_length=200)
+    password1 = models.CharField(max_length=120)
+    paasword2 = models.CharField(max_length=120)
+
+    def __str__(self):
+        return self.firstName #+ ' ' + self.lastName
+
+    #hotel_Main_Img = models.ImageField(upload_to='images/')
 class Quiz(models.Model):
     name = models.CharField(max_length=50)
     desc = models.CharField(max_length=500)    

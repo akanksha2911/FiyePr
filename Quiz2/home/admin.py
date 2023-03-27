@@ -1,7 +1,8 @@
 from django.contrib import admin
 
-from .models import Quiz, Question, Answer, Marks_Of_User
+from .models import Quiz, Question, Answer, Marks_Of_User,Signup
 
+admin.site.register(Signup)
 admin.site.register(Quiz)
 
 class AnswerInLine(admin.TabularInline):
