@@ -1,6 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 import random
+from django.utils import timezone
+import os
+from uuid import uuid4
 
 class Signup(models.Model):
     firstName = models.CharField(max_length=120)
@@ -12,11 +15,23 @@ class Signup(models.Model):
 
     def __str__(self):
         return self.firstName #+ ' ' + self.lastName
-    
+
+def path_and_rename(instance, filename):
+    upload_to = 'images'
+    ext = filename.split('.')[-1]
+    # get filename
+    if instance.name:
+        filename = '{}.{}'.format(instance.name, ext)
+    else:
+        # set filename as random string
+        filename = '{}.{}'.format(uuid4().hex, ext)
+    # return the whole path to the file
+    return os.path.join(upload_to, filename)
+
 class Hotel(models.Model):
 	name = models.CharField(max_length=50)
-	hotel_Main_Img = models.ImageField(upload_to='images/')
-    
+	hotel_Main_Img = models.ImageField(upload_to=path_and_rename)
+    #hotel_Main_Img = models.ImageField(upload_to='images/')
     #def __str__(self):
     #    return self.name
     
