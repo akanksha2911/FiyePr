@@ -4,8 +4,30 @@ from django.http import JsonResponse
 from django.contrib.auth  import authenticate,  login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from .forms import QuizForm, QuestionForm
+
 from django.forms import inlineformset_factory
+
+from django.http import HttpResponse
+
+from .forms import *
+
+# Create your views here.
+
+
+def hotel_image_view(request):
+
+	if request.method == 'POST':
+		form = HotelForm(request.POST, request.FILES)
+
+		if form.is_valid():
+			form.save()
+			return render(request,'login.html')
+	else:
+		form = HotelForm()
+	return render(request, 'image_upload.html', {'form': form})
+
+
+
 
 def index(request):
     quiz = Quiz.objects.all()
@@ -92,7 +114,7 @@ def Signup(request):
         user.first_name = first_name
         user.last_name = last_name
         user.save()
-        return render(request, 'login.html')  
+        return redirect('/image_upload')  
     return render(request, "signup.html")
 
 def Login(request):

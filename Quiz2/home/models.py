@@ -12,7 +12,14 @@ class Signup(models.Model):
 
     def __str__(self):
         return self.firstName #+ ' ' + self.lastName
-
+    
+class Hotel(models.Model):
+	name = models.CharField(max_length=50)
+	hotel_Main_Img = models.ImageField(upload_to='images/')
+    
+    #def __str__(self):
+    #    return self.name
+    
     #hotel_Main_Img = models.ImageField(upload_to='images/')
 class Quiz(models.Model):
     name = models.CharField(max_length=50)
@@ -54,3 +61,6 @@ class Marks_Of_User(models.Model):
         return str(self.quiz)
 
 
+# models.py
+
+    

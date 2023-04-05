@@ -1,5 +1,10 @@
 from django.urls import path
 from . import views
+from django.contrib import admin
+from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
+from .views import *
 
 urlpatterns = [
     path("", views.index, name="index"),
@@ -8,6 +13,7 @@ urlpatterns = [
     path('<int:myid>/save/', views.save_quiz_view, name='quiz-save'),
     
     path("signup/", views.Signup, name="signup"),
+    path('image_upload/', hotel_image_view, name='image_upload'),
     path("login/", views.Login, name="login"),
     path("logout/", views.Logout, name="logout"),
     
@@ -18,3 +24,7 @@ urlpatterns = [
     path('delete_question/<int:myid>/', views.delete_question, name='delete_question'),  
     path('delete_result/<int:myid>/', views.delete_result, name='delete_result'),    
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)
