@@ -16,6 +16,7 @@ urlpatterns = [
     path('image_upload/', hotel_image_view, name='image_upload'),
     path("login/", views.Login, name="login"),
     path("logout/", views.Logout, name="logout"),
+    path("capture/",capture,name="capture"),
     
     path('add_quiz/', views.add_quiz, name='add_quiz'),    
     path('add_question/', views.add_question, name='add_question'),  
