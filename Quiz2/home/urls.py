@@ -17,6 +17,7 @@ urlpatterns = [
     path("login/", views.Login, name="login"),
     path("logout/", views.Logout, name="logout"),
     path("capture/",capture,name="capture"),
+    path('video_feed/',views.video_feed,name='video_feed'),
     
     path('add_quiz/', views.add_quiz, name='add_quiz'),    
     path('add_question/', views.add_question, name='add_question'),  
