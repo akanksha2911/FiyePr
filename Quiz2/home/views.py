@@ -33,7 +33,6 @@ def video_feed(request):
 
 
 def hotel_image_view(request):
-
 	if request.method == 'POST':
 		form = HotelForm(request.POST, request.FILES)
 
