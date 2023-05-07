@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import *
+from .models import Signup,Image,Quiz,Question,Answer,Marks_Of_User
 from django.http import JsonResponse
 from django.contrib.auth  import authenticate,  login, logout
 from django.contrib.auth.models import User
@@ -8,15 +8,15 @@ from django.forms import inlineformset_factory
 from django.http import HttpResponse
 from .forms import *
 from django.http import StreamingHttpResponse
-from .camera import VideoCamera
+from camera import VideoCamera
+
 # Create your views here.
 
 def capture(request):
     if(request.method == "POST"):
         return redirect('/')
     return render(request,'capture.html')
-# def submit_form(request):
-#     return render()
+
 
 def gen(camera):
     while True:
@@ -30,6 +30,14 @@ def video_feed(request):
     except:
         pass
 
+def plot_csv():
+    response = HttpResponse(open('Attendance.csv',content_type="text/csv"))
+    response['Content-Disposition'] = 'attachment_filename = "Attendance.csv"'
+    return response
+    # return send_file('Attendance.csv',
+    #                  mimetype='text/csv',
+    #                  attachment_filename='Attendance.csv',
+    #                  as_attachment=True)
 
 def image_view(request):
 
@@ -145,7 +153,7 @@ def Login(request):
         
         if user is not None:
             login(request, user)
-            return redirect("/capture")
+            return render(request,'capture.html')
         else:
             return render(request, "login.html") 
     return render(request, "login.html")

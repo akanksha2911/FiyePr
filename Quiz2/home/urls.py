@@ -1,10 +1,10 @@
 from django.urls import path
-from . import views
+from django.views import View
 from django.contrib import admin
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import *
+from . import views
 
 urlpatterns = [
     path("", views.index, name="index"),
@@ -13,11 +13,12 @@ urlpatterns = [
     path('<int:myid>/save/', views.save_quiz_view, name='quiz-save'),
     
     path("signup/", views.Signup, name="signup"),
-    path('image_upload/', image_view, name='image_upload'),
+    path('image_upload/', views.image_view, name='image_upload'),
     path("login/", views.Login, name="login"),
     path("logout/", views.Logout, name="logout"),
-    path("capture/",capture,name="capture"),
+    path("capture/",views.capture,name="capture"),
     path('video_feed/',views.video_feed,name='video_feed'),
+    path('get_csv',views.plot_csv,name='plot_csv'),
     
     path('add_quiz/', views.add_quiz, name='add_quiz'),    
     path('add_question/', views.add_question, name='add_question'),  
