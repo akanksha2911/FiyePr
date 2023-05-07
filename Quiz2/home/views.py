@@ -52,8 +52,6 @@ def image_view(request):
 	return render(request, 'image_upload.html', {'form': form})
 
 
-
-
 def index(request):
     quiz = Quiz.objects.all()
     para = {'quiz' : quiz}

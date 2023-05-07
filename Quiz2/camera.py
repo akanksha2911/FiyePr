@@ -8,9 +8,9 @@ from datetime import datetime
 import face_recognition
 from training import encodeListKnown,personNames
 #face_detection_videocam = cv2.CascadeClassifier(os.path.join(settings.BASE_DIR,'opencv_haarcascade_data/haarcascade_frontalface_default.xml'))
-
 faceDetect=cv2.CascadeClassifier(r'C:\\Users\\hpw\\Desktop\\akanksha\\Quiz2\\home\\haarcascade_frontalface_default.xml')
 class VideoCamera(object):
+        
 	def __init__(self):
 		self.video = cv2.VideoCapture(0)
 
@@ -18,6 +18,7 @@ class VideoCamera(object):
 		self.video.release()
 
 	def get_frame(self):
+              
               global matches,faceDis,faceLoc
               ret,frame=self.video.read()
               faces = cv2.resize(frame, (0, 0), None, 0.25, 0.25)
@@ -34,6 +35,8 @@ class VideoCamera(object):
 
               if matches[matchIndex]:                                        
                  name = personNames[matchIndex].upper()
+                 
+                       
                  #print(name)
                  y1, x2, y2, x1 = faceLoc
                  y1, x2, y2, x1 = y1 * 4, x2 * 4, y2 * 4, x1 * 4
@@ -52,6 +55,7 @@ class VideoCamera(object):
                         f.writelines(f'\n{name},{dtString}')
               ret,jpg=cv2.imencode('.jpg',frame)
               return jpg.tobytes()
+              #return matchList
 		# success, image = self.video.read()
 		# # We are using Motion JPEG, but OpenCV defaults to capture raw images,
 		# # so we must encode it into JPEG in order to correctly display the
