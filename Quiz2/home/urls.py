@@ -18,7 +18,8 @@ urlpatterns = [
     path("logout/", views.Logout, name="logout"),
     path("capture/",views.capture,name="capture"),
     path('video_feed/',views.video_feed,name='video_feed'),
-    path('get_csv',views.plot_csv,name='plot_csv'),
+    path('stop_video_feed/', views.stop_video_feed, name='stop_video_feed'),
+    #path('get_csv',views.plot_csv,name='plot_csv'),
     
     path('add_quiz/', views.add_quiz, name='add_quiz'),    
     path('add_question/', views.add_question, name='add_question'),  

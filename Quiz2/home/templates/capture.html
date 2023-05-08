@@ -25,13 +25,20 @@
 
     <h1 style="text-align: center;">VERIFYING USER</h1>
     <div align="center">
-    <img src ="{% url 'video_feed' %}">
     
-    <form method="post" action="/">
+    <img src ="{% url 'video_feed' %}">
+
+    
+    <!--<form method="post" action="/">
         {% csrf_token %}
         <button class="button" type="submit">Submit</button>
-    </form>
+    </form>-->
 </div>
+<script>
+    setTimeout(function() {
+        window.location.href = "{% url 'stop_video_feed' %}";
+    }, 60000);
+</script>
 </body>
 </html>
 

@@ -9,12 +9,27 @@ from django.http import HttpResponse
 from .forms import *
 from django.http import StreamingHttpResponse
 from camera import VideoCamera
-
+import csv
+from datetime import datetime
 # Create your views here.
+filename = r'C:\\Users\\hpw\\Desktop\\akanksha\\Attendance.csv'
 
 def capture(request):
-    if(request.method == "POST"):
-        return redirect('/')
+    with open(filename, 'r') as file:
+      reader = csv.reader(file)
+      for row in reader:
+        time_str = row[1]  # assuming the time is in the second column
+        time_obj = datetime.strptime(time_str, '%H:%M:%S')  # convert string to datetime object
+        now = datetime.now()  # get current time
+        if time_obj.time() == now.time():  # compare time only (not date)
+            if(row[0] == Login.username):
+                return redirect('/')
+        else:
+            return HttpResponse('Ullu banaya bada maja aaya')
+    # if(request.method == "POST"):
+    #      return redirect('/')
+    # #print(Login.username)
+    # #print(Login.username)
     return render(request,'capture.html')
 
 
@@ -29,6 +44,10 @@ def video_feed(request):
           return StreamingHttpResponse(gen(VideoCamera()), content_type="multipart/x-mixed-replace;boundary=frame")
     except:
         pass
+
+def stop_video_feed(request):
+    # Add any code to stop the video feed here
+    return redirect('/')
 
 def plot_csv():
     response = HttpResponse(open('Attendance.csv',content_type="text/csv"))
@@ -144,14 +163,15 @@ def Login(request):
     if request.user.is_authenticated:
         return redirect('/')
     if request.method=="POST":
-        username = request.POST['username']
+        Login.username = request.POST['username']
         password = request.POST['password']
-        
-        user = authenticate(username=username, password=password)
+    
+        user = authenticate(username=Login.username, password=password)
         
         if user is not None:
             login(request, user)
             return render(request,'capture.html')
+            #return redirect('/capture')
         else:
             return render(request, "login.html") 
     return render(request, "login.html")
