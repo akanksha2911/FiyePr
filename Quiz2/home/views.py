@@ -14,25 +14,6 @@ from datetime import datetime
 # Create your views here.
 filename = r'C:\\Users\\hpw\\Desktop\\akanksha\\Attendance.csv'
 
-# def capture(request):
-#     with open(filename, 'r') as file:
-#       reader = csv.reader(file)
-#       for row in reader:
-#         time_str = row[1]  # assuming the time is in the second column
-#         time_obj = datetime.strptime(time_str, '%H:%M:%S')  # convert string to datetime object
-#         now = datetime.now()  # get current time
-#         if time_obj.time() == now.time():  # compare time only (not date)
-#             if(row[0] == Login.username):
-#                 return redirect('/')
-#         else:
-#             return HttpResponse('Ullu banaya bada maja aaya')
-#     # if(request.method == "POST"):
-#     #      return redirect('/')
-#     # #print(Login.username)
-#     # #print(Login.username)
-#     return render(request,'capture.html')
-
-
 def gen(camera):
     while True:
         frame = camera.get_frame()
@@ -46,37 +27,23 @@ def video_feed(request):
         pass
 
 def stop_video_feed(request):
-    # Add any code to stop the video feed here
-    print("Starting")
+    
     with open(filename, 'r+') as file:
       reader = csv.reader(file)
-      #file.truncate()
-      
       for row in reader:
         if not (row):    
             continue
         time_str = row[1]  # assuming the time is in the second column
-        print(time_str+"I am time str")
         time_obj = datetime.strptime(time_str, '%H:%M:%S')  # convert string to datetime object
-        #print(str(time_obj)+"I am time obj")
-        print("Go on 1")
         now = datetime.now()  # get current time
-        #print(str(now)+"I am now")
         open(filename,'w+')
-        print("Go on")
-
-        if(time_obj.time() <= now.time() ):  # compare time only (not date)
+        if(time_obj.time() <= now.time()):  # compare time only (not date)
             print("This is working")
             if(row[0] == Login.username.upper()):
-                print("Something is Working")
-                # f = open(filename, "w+")
-                # f.close()
-
+                login(request,user=authenticate(username=Login.username, password=Login.password))
+                request.session['redirected_to_home'] = True
                 return redirect('/')
-    #return render(request,'index.html')
-    # f = open(filename, "w+")
-    # f.close()
-  
+    #request.session['redirected_to_login'] = True
     return render(request,'login.html')
 
 def plot_csv():
@@ -194,12 +161,12 @@ def Login(request):
         return redirect('/')
     if request.method=="POST":
         Login.username = request.POST['username']
-        password = request.POST['password']
+        Login.password = request.POST['password']
     
-        user = authenticate(username=Login.username, password=password)
+        user = authenticate(username=Login.username, password=Login.password)
         
         if user is not None:
-            login(request, user)
+            #login(request, user)
             return render(request,'capture.html')
             #return redirect('/capture')
         else:
