@@ -26,34 +26,25 @@ def video_feed(request):
     except:
         pass
 
-def stop_video_feed(request):
-    
+def stop_video_feed(request): 
     with open(filename, 'r+') as file:
       reader = csv.reader(file)
       for row in reader:
         if not (row):    
             continue
-        time_str = row[1]  # assuming the time is in the second column
-        time_obj = datetime.strptime(time_str, '%H:%M:%S')  # convert string to datetime object
-        now = datetime.now()  # get current time
         open(filename,'w+')
-        if(time_obj.time() <= now.time()):  # compare time only (not date)
-            print("This is working")
-            if(row[0] == Login.username.upper()):
-                login(request,user=authenticate(username=Login.username, password=Login.password))
-                request.session['redirected_to_home'] = True
-                return redirect('/')
-    #request.session['redirected_to_login'] = True
+        if(row[0] == Login.username.upper()):
+            login(request,user=authenticate(username=Login.username, password=Login.password))
+            request.session['redirected_to_home'] = True
+            return redirect('/')
+    request.session['redirected_to_login'] = True
     return render(request,'login.html')
 
 def plot_csv():
     response = HttpResponse(open('Attendance.csv',content_type="text/csv"))
     response['Content-Disposition'] = 'attachment_filename = "Attendance.csv"'
     return response
-    # return send_file('Attendance.csv',
-    #                  mimetype='text/csv',
-    #                  attachment_filename='Attendance.csv',
-    #                  as_attachment=True)
+    
 
 def image_view(request):
 
@@ -69,6 +60,7 @@ def image_view(request):
 
 
 def index(request):
+    request.session['redirected_to_login'] = False
     quiz = Quiz.objects.all()
     para = {'quiz' : quiz}
     return render(request, "index.html", para)
@@ -152,11 +144,13 @@ def Signup(request):
         user = User.objects.create_user(username, email, password)
         user.first_name = first_name
         user.last_name = last_name
+        #user.profile_pic = profile_pic
         user.save()
-        return redirect('/image_upload')  
+        return redirect("/image_upload")  
     return render(request, "signup.html")
 
 def Login(request):
+    request.session['redirected_to_login'] = False
     if request.user.is_authenticated:
         return redirect('/')
     if request.method=="POST":
@@ -171,6 +165,7 @@ def Login(request):
             #return redirect('/capture')
         else:
             return render(request, "login.html") 
+    
     return render(request, "login.html")
 
 def Logout(request):

@@ -1,14 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>Submit Image</title>
-</head>
-<body>
-	<form method = "post" enctype="multipart/form-data">
+{% extends 'base.html' %}
+{% block title %} Image Uploading {% endblock %}
+{% block body%}
+<div class="row py-5 p-4 bg-white rounded shadow-sm" >
+
+    <div class="col-lg-6">
+        <div class="bg-light rounded-pill px-4 py-3 text-uppercase font-weight-bold"
+            style="color:black;font-weight:bold">Upload Your Image</div>
+        <br>
+	<form class="row g-4" method = "post" enctype="multipart/form-data">
 		{% csrf_token %}
+		<div class="col-md-12">
 		{{ form.as_p }}
-		<button type="submit">Upload</button>
+		<div>
+		<button type="submit" class="btn btn-primary">Upload</button>
 	</form>
-</body>
-</html>
+{%endblock%}

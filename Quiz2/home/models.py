@@ -10,6 +10,7 @@ class Signup(models.Model):
     lastName = models.CharField(max_length=120)
     userName = models.CharField(max_length=50)
     email = models.EmailField(max_length=200)
+    #profile_pic = models.ImageField(upload_to="Quiz2\media\images",default="",null=True, blank=True)
     password1 = models.CharField(max_length=120)
     paasword2 = models.CharField(max_length=120)
 
