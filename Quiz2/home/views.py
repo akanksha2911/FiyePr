@@ -89,10 +89,7 @@ def stop_video_feed(request):
     request.session['redirected_to_login'] = True
     return render(request,'login.html')
 
-def plot_csv():
-    response = HttpResponse(open('Attendance.csv',content_type="text/csv"))
-    response['Content-Disposition'] = 'attachment_filename = "Attendance.csv"'
-    return response
+
     
 
 def image_view(request):
