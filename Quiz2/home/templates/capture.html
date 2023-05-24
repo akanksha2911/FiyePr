@@ -1,29 +1,33 @@
-{% extends 'base.html' %}
-{% block title %} Face Detection {% endblock %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Live Stream</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+  <h1>Live Stream</h1>
+  <img src="{% url 'video_feed' %}" alt="Live Stream">
 
-{% block body %}
+  <button id="capture-btn">Capture Image</button>
 
+  <script>
+      // Capture image when the button is clicked
+      $('#capture-btn').click(function() {
+          $.ajax({
+              url: '/capture/',
+              type: 'GET',
+              success: function(response) {
+                  alert(response);
+              },
+              error: function(error) {
+                  console.log(error);
+              }
+          });
+      });
+  </script>
 
-<br>    
-<h1 style="text-align: center;">VERIFYING USER</h1>
-    <div align="center">
+  
     
-    <img src ="{% url 'video_feed' %}">
-
     
-    <!--<form method="post" action="/">
-        {% csrf_token %}
-        <button class="button" type="submit">Submit</button>
-    </form>-->
-</div>
-{% endblock %}
-{% block js %}
-<script>
-    setTimeout(function() {
-        window.location.href = "{% url 'stop_video_feed' %}";
-    }, 15000);
-</script>
-{%endblock%}
-
-
-
+</body>
+</html>

@@ -43,6 +43,7 @@
   {% endblock %}
 
 {% block js %}
+
 {% if request.session.redirected_to_login %}
 <script>
     alert('Warning: Face not verified. Please ensure that your face is clearly visible in the camera frame and try again. ');

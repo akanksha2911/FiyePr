@@ -1,0 +1,33 @@
+<!-- capture.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Webcam Capture</title>
+</head>
+<body>
+    <h1>Webcam Capture</h1>
+    <div id="video-container">
+        <video id="video" autoplay></video>
+    </div>
+    <button id="capture-btn">Capture</button>
+
+    <script>
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function(stream) {
+                var video = document.getElementById('video');
+                video.srcObject = stream;
+            })
+            .catch(function(err) {
+                console.log(err);
+            });
+
+        var captureBtn = document.getElementById('capture-btn');
+        captureBtn.addEventListener('click', function() {
+            // Trigger the capture functionality
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '{% url "capture_image" %}');
+            xhr.send();
+        });
+    </script>
+</body>
+</html>

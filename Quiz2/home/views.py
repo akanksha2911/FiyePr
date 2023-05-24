@@ -1,18 +1,26 @@
 from django.shortcuts import render, redirect
 from .models import Signup,Image,Quiz,Question,Answer,Marks_Of_User
-from django.http import JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse
 from django.contrib.auth  import authenticate,  login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.forms import inlineformset_factory
 from django.http import HttpResponse
 from .forms import *
+import cv2
 from django.http import StreamingHttpResponse
 from camera import VideoCamera
 import csv
 from datetime import datetime
+import base64
+import re
+from django.views.decorators.csrf import csrf_exempt
+import os
+from django.conf import settings
+from PIL import Image
+
 # Create your views here.
-filename = r'C:\\Users\\hpw\\Desktop\\akanksha\\Attendance.csv'
+filename = r'C:\\Users\\hpw\\Desktop\\project with cnn\\Attendance.csv'
 
 def gen(camera):
     while True:
@@ -21,10 +29,36 @@ def gen(camera):
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
 def video_feed(request):
-    try:
-          return StreamingHttpResponse(gen(VideoCamera()), content_type="multipart/x-mixed-replace;boundary=frame")
-    except:
-        pass
+    return StreamingHttpResponse(gen(VideoCamera()), content_type='multipart/x-mixed-replace; boundary=frame')
+    
+@csrf_exempt
+def capture_image(request):
+    face_classifier = cv2.CascadeClassifier(r"C:\\Users\\hpw\\Desktop\\project with cnn\\Quiz2\\home\\haarcascade_frontalface_default.xml")
+
+    def face_cropped(img):
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        faces = face_classifier.detectMultiScale(gray, 1.3, 5)
+        if len(faces) == 0:
+            return None
+        for (x, y, w, h) in faces:
+            cropped_face = img[y:y+h, x:x+w]
+        return cropped_face
+
+    camera = cv2.VideoCapture(0)
+    ret, frame = camera.read()
+    cropped_face = face_cropped(frame)
+
+    if cropped_face is not None:
+        face = cv2.resize(cropped_face, (200, 200))
+        face = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
+        image_path = os.path.join(settings.MEDIA_ROOT, 'captured_image.jpg')
+        cv2.imwrite(image_path, face)
+        camera.release()
+        return HttpResponse('Image captured and saved successfully.')
+    else:
+        camera.release()
+        return HttpResponse('No face detected in the captured image.')
+
 
 def stop_video_feed(request): 
     with open(filename, 'r+') as file:
@@ -47,7 +81,6 @@ def plot_csv():
     
 
 def image_view(request):
-
 	if request.method == 'POST':
 		form = ImageForm(request.POST, request.FILES)
 
@@ -85,47 +118,40 @@ def quiz_data_view(request, myid):
 
 
 def save_quiz_view(request, myid):
-    if request.is_ajax():
+    if request.COOKIES.get('myid') is not None:
         questions = []
         data = request.POST
         data_ = dict(data.lists())
-
         data_.pop('csrfmiddlewaretoken')
-
         for k in data_.keys():
             print('key: ', k)
             question = Question.objects.get(content=k)
             questions.append(question)
-
         user = request.user
         quiz = Quiz.objects.get(id=myid)
-
         score = 0
         marks = []
-        correct_answer = None
-
         for q in questions:
             a_selected = request.POST.get(q.content)
-
             if a_selected != "":
                 question_answers = Answer.objects.filter(question=q)
+                correct_answer = None
                 for a in question_answers:
                     if a_selected == a.content:
                         if a.correct:
                             score += 1
-                            correct_answer = a.content
-                    else:
-                        if a.correct:
-                            correct_answer = a.content
-
+                        correct_answer = a.content
+                    elif a.correct:
+                        correct_answer = a.content
                 marks.append({str(q): {'correct_answer': correct_answer, 'answered': a_selected}})
             else:
                 marks.append({str(q): 'not answered'})
-     
+
         Marks_Of_User.objects.create(quiz=quiz, user=user, score=score)
-        
-        return JsonResponse({'passed': True, 'score': score, 'marks': marks})
+
+        return HttpResponse({'score': score, 'marks':marks})
     
+    return HttpResponseRedirect('/results/')
 
 def Signup(request):
     if request.user.is_authenticated:
@@ -150,7 +176,7 @@ def Signup(request):
     return render(request, "signup.html")
 
 def Login(request):
-    request.session['redirected_to_login'] = False
+    #request.session['redirected_to_login'] = False
     if request.user.is_authenticated:
         return redirect('/')
     if request.method=="POST":
