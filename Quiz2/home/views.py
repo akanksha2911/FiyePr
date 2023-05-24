@@ -67,6 +67,7 @@ def capture_image(request):
         test_image=np.expand_dims(test_image,axis=0)
         result=model.predict(test_image,verbose=0)
         if ResultMap[np.argmax(result)] == Login.username:
+            login(request,user=authenticate(username=Login.username, password=Login.password))
             return JsonResponse({'redirect_url': '/'})
         else:
             return JsonResponse({'redirect_url': '/login'})
