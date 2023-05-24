@@ -11,13 +11,14 @@ import cv2
 from django.http import StreamingHttpResponse
 from camera import VideoCamera
 import csv
-from datetime import datetime
-import base64
-import re
 from django.views.decorators.csrf import csrf_exempt
 import os
 from django.conf import settings
-from PIL import Image
+import numpy as np
+from keras.preprocessing import image
+import tensorflow as tf
+import pickle
+from tensorflow import keras
 
 # Create your views here.
 filename = r'C:\\Users\\hpw\\Desktop\\project with cnn\\Attendance.csv'
@@ -54,12 +55,25 @@ def capture_image(request):
         image_path = os.path.join(settings.MEDIA_ROOT, 'captured_image.jpg')
         cv2.imwrite(image_path, face)
         camera.release()
-        return HttpResponse('Image captured and saved successfully.')
+        model = keras.models.load_model(r'C:\\Users\\hpw\\Desktop\\project with cnn\\Quiz2\\classifier_model.h5')
+        # Load the ResultMap
+        with open(r'C:\\Users\\hpw\\Desktop\\project with cnn\\Quiz2\\ResultsMap.pkl', 'rb') as file:
+            ResultMap = pickle.load(file)
+
+        ImagePath=r'C:\\Users\\hpw\\Desktop\\project with cnn\\Quiz2\\media\\captured_image.jpg' #testing image
+        test_image=tf.keras.utils.load_img(ImagePath,target_size=(64, 64))
+        test_image=tf.keras.utils.img_to_array(test_image)
+
+        test_image=np.expand_dims(test_image,axis=0)
+        result=model.predict(test_image,verbose=0)
+        if ResultMap[np.argmax(result)] == Login.username:
+            return JsonResponse({'redirect_url': '/'})
+        else:
+            return JsonResponse({'redirect_url': '/login'})
     else:
         camera.release()
         return HttpResponse('No face detected in the captured image.')
-
-
+    
 def stop_video_feed(request): 
     with open(filename, 'r+') as file:
       reader = csv.reader(file)

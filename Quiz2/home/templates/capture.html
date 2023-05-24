@@ -9,22 +9,25 @@
   <img src="{% url 'video_feed' %}" alt="Live Stream">
 
   <button id="capture-btn">Capture Image</button>
+<script>
+  $('#capture-btn').click(function() {
+    $.ajax({
+        url: '/capture/',
+        type: 'GET',
+        success: function(response) {
+            if (response.redirect_url) {
+                window.location.href = response.redirect_url;  // Perform the redirect
+            } else {
+                alert('Face not verified. Please try again.');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.log('Error:', error);
+        }
+    });
+});
+</script>
 
-  <script>
-      // Capture image when the button is clicked
-      $('#capture-btn').click(function() {
-          $.ajax({
-              url: '/capture/',
-              type: 'GET',
-              success: function(response) {
-                  alert(response);
-              },
-              error: function(error) {
-                  console.log(error);
-              }
-          });
-      });
-  </script>
 
   
     
