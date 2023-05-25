@@ -130,8 +130,13 @@
 
 {% endblock %}
 {% block js %}
-
-
+<!--
+{% if request.session.redirected_to_login %}
+<script>
+    alert('You are successfully logged in.');
+</script>
+{% endif %}
+-->
 
 <script>
  

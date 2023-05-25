@@ -68,8 +68,10 @@ def capture_image(request):
         result=model.predict(test_image,verbose=0)
         if ResultMap[np.argmax(result)] == Login.username:
             login(request,user=authenticate(username=Login.username, password=Login.password))
+            #request.session['redirected_to_home'] = True
             return JsonResponse({'redirect_url': '/'})
         else:
+            #request.session['redirected_to_login'] = True
             return JsonResponse({'redirect_url': '/login'})
     else:
         camera.release()
@@ -188,7 +190,7 @@ def Signup(request):
     return render(request, "signup.html")
 
 def Login(request):
-    #request.session['redirected_to_login'] = False
+    request.session['redirected_to_login'] = False
     if request.user.is_authenticated:
         return redirect('/')
     if request.method=="POST":
