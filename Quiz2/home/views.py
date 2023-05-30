@@ -21,7 +21,6 @@ import pickle
 from tensorflow import keras
 
 # Create your views here.
-filename = r'C:\\Users\\hpw\\Desktop\\project with cnn\\Attendance.csv'
 
 def gen(camera):
     while True:
@@ -66,32 +65,18 @@ def capture_image(request):
 
         test_image=np.expand_dims(test_image,axis=0)
         result=model.predict(test_image,verbose=0)
+        print(ResultMap[np.argmax(result)])
         if ResultMap[np.argmax(result)] == Login.username:
             login(request,user=authenticate(username=Login.username, password=Login.password))
-            #request.session['redirected_to_home'] = True
+            request.session['redirected_to_home'] = True
             return JsonResponse({'redirect_url': '/'})
         else:
-            #request.session['redirected_to_login'] = True
+            request.session['redirected_to_login'] = True
             return JsonResponse({'redirect_url': '/login'})
+            #return HttpResponse('Try again.')
     else:
         camera.release()
         return HttpResponse('No face detected in the captured image.')
-    
-def stop_video_feed(request): 
-    with open(filename, 'r+') as file:
-      reader = csv.reader(file)
-      for row in reader:
-        if not (row):    
-            continue
-        open(filename,'w+')
-        if(row[0] == Login.username.upper()):
-            login(request,user=authenticate(username=Login.username, password=Login.password))
-            request.session['redirected_to_home'] = True
-            return redirect('/')
-    request.session['redirected_to_login'] = True
-    return render(request,'login.html')
-
-
     
 
 def image_view(request):

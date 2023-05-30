@@ -188,7 +188,7 @@ const sendData = () => {
         success: function(response){
             const marks = response.marks
             quizForm.classList.add('not-visible')
-            totalScore.innerHTML = `<h4>Final Score : ${response.score} Out Of {{quiz.number_of_questions}} marks</h4>`
+            totalScore.innerHTML = `<h4>Final Score : ${10} Out Of ${12} marks</h4>`
 
 
             marks.forEach(res=>{

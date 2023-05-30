@@ -16,12 +16,8 @@ urlpatterns = [
     path('image_upload/', views.image_view, name='image_upload'),
     path("login/", views.Login, name="login"),
     path("logout/", views.Logout, name="logout"),
-    #path("capture/",views.capture,name="capture"),
     path('video_feed/',views.video_feed,name='video_feed'),
     path('capture/', views.capture_image, name='capture_image'),
-    #path('save_image/', views.save_image, name='save_image'),
-    path('stop_video_feed/', views.stop_video_feed, name='stop_video_feed'),
-    #path('get_csv',views.plot_csv,name='plot_csv'),
     
     path('add_quiz/', views.add_quiz, name='add_quiz'),    
     path('add_question/', views.add_question, name='add_question'),  
